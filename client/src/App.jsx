@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Routes, Route, useLocation, Link } from "react-router-dom";
+import { Routes, Route, useLocation, Link, Navigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import "./css/style.css";
 
@@ -10,10 +10,11 @@ import Dashboard from "./pages/Dashboard";
 
 import { AccountContext } from "./context/context";
 import History from "./pages/History";
+import Login from "./pages/Login";
 
 function App() {
   const location = useLocation();
-  const { mainData } = useContext(AccountContext);
+  const { mainData, user, setUser } = useContext(AccountContext);
   useEffect(() => {
     document.querySelector("html").style.scrollBehavior = "auto";
     window.scroll({ top: 0 });
@@ -50,8 +51,20 @@ function App() {
       {mainData?.length > 0 ? (
         <>
           <Routes>
-            <Route exact path="/" element={<Dashboard />} />
-            <Route exact path="/history" element={<History />} />
+            <Route
+              path="/"
+              exact
+              element={
+                user == "admin" ? <Dashboard /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/history"
+              exact
+              element={user == "admin" ? <History /> : <Navigate to="/login" />}
+            />
+
+            <Route path="/login" element={<Login />} />
           </Routes>
         </>
       ) : (

@@ -176,6 +176,7 @@ function MainTrend({ data, width, height, title }) {
 
   const onConfirm = () => {
     if (reason || excelWrite) {
+      toast.loading("Data is Being Entered");
       axios
         .post("http://localhost:8000/api/app3", {
           month: excelWrite.split(",")[0],
@@ -184,6 +185,7 @@ function MainTrend({ data, width, height, title }) {
           reason: reason,
         })
         .then((res) => {
+          toast.dismiss();
           toast.success("Data Entry Success !");
           setOpen2(false);
           setReason(null);

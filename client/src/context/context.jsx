@@ -7,13 +7,14 @@ export const AccountContext = createContext(null);
 
 export const Accountprovider = ({ children }) => {
   const [mainData, setMainData] = useState(null);
+  const [user, setUser] = useState(null);
   const [historyData, setHistoryData] = useState(null);
   const [Month, setMonth] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
 
   console.log(historyData);
 
-  console.log(Month);
+  console.log(user, "user");
 
   function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -88,6 +89,8 @@ export const Accountprovider = ({ children }) => {
         setMonth,
         selectAll,
         setSelectAll,
+        user,
+        setUser,
       }}
     >
       {children}

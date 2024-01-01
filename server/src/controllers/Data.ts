@@ -28,7 +28,7 @@ const Data = mongoose.model('Person', Any);
 
 const SendData = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const filePath = 'E:\\codes\\DM Dashboard\\server\\Aug.xlsx';
+		const filePath = 'E:\\codes\\DM Dashboard\\server\\data.xlsx';
 		let finalArr: any = [];
 
 		// Check if the file exists
@@ -37,7 +37,7 @@ const SendData = async (req: Request, res: Response, next: NextFunction) => {
 		}
 		const workbook = xlsx.readFile(filePath);
 		// Assuming you have only one sheet in the Excel file
-		const sheetName = workbook.SheetNames[0];
+		const sheetName = workbook.SheetNames[3];
 		const sheet = workbook.Sheets[sheetName];
 		// Parse the sheet data to JSON
 		const jsonData = xlsx.utils.sheet_to_json(sheet);

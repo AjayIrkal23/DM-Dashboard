@@ -21,7 +21,7 @@ function Dh() {
 
   const [chart, setChart] = useState("Production");
 
-  const month = new Date().getMonth() + 1;
+  const month = new Date().getMonth();
   const year = new Date().getFullYear();
   const time = "00:00:00";
   const day = 1;

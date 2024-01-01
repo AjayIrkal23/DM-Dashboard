@@ -9,6 +9,8 @@ import { AccountContext } from "../context/context";
 const History = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { setMonth, Month } = useContext(AccountContext);
+
+  console.log(Month);
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}

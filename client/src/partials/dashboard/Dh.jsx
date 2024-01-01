@@ -17,23 +17,29 @@ import toast from "react-hot-toast";
 function Dh() {
   const date = new Date(Date.now()).toDateString();
 
-  const { historyData } = useContext(AccountContext);
+  const { historyData, Month } = useContext(AccountContext);
+
+  console.log(new Date(Month), "year");
 
   const [chart, setChart] = useState("Production");
 
-  const month = new Date().getMonth();
-  const year = new Date().getFullYear();
+  const month = new Date(Month).getMonth() + 1;
+  const year = new Date(Month).getFullYear();
   const time = "00:00:00";
   const day = 1;
+  const end = 31;
   const dateObj = year + " " + month + " " + day + " " + time;
+  const dateend = year + " " + month + " " + end + " " + time;
+  console.log(dateObj, "db");
   var getDaysArray = function (s, e) {
     for (
       var a = [], d = new Date(s);
-      d <= new Date(e);
+      d < new Date(e);
       d.setDate(d.getDate() + 1)
     ) {
       a.push(new Date(d).toDateString().split(" ").slice(1, 3));
     }
+    console.log(a);
     return a;
   };
 
@@ -65,7 +71,7 @@ function Dh() {
   const chartData = historyData?.map((item) => {
     console.log(item);
     return {
-      labels: getDaysArray(new Date(dateObj), new Date()),
+      labels: getDaysArray(new Date(dateObj), new Date(dateend)),
       name: item.name,
       unit: item.unit,
       type: item.type,

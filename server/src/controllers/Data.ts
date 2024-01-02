@@ -37,7 +37,7 @@ const SendData = async (req: Request, res: Response, next: NextFunction) => {
 		}
 		const workbook = xlsx.readFile(filePath);
 		// Assuming you have only one sheet in the Excel file
-		const sheetName = workbook.SheetNames[3];
+		const sheetName = workbook.SheetNames[4];
 		const sheet = workbook.Sheets[sheetName];
 		// Parse the sheet data to JSON
 		const jsonData = xlsx.utils.sheet_to_json(sheet);

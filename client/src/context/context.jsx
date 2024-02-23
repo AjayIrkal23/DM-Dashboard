@@ -11,6 +11,11 @@ export const Accountprovider = ({ children }) => {
   const [historyData, setHistoryData] = useState(null);
   const [Month, setMonth] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
+  const [chart, setChart] = useState({
+    main: "Production",
+    ckpi: ["Total Oxygen", "Total Moisture Input"],
+    target: 3658,
+  });
 
   console.log(historyData);
 
@@ -91,6 +96,8 @@ export const Accountprovider = ({ children }) => {
         setSelectAll,
         user,
         setUser,
+        chart,
+        setChart,
       }}
     >
       {children}

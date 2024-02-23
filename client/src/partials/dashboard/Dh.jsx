@@ -27,7 +27,7 @@ function Dh() {
   const year = new Date(Month).getFullYear();
   const time = "00:00:00";
   const day = 1;
-  const end = 31;
+  const end = 30;
   const dateObj = year + " " + month + " " + day + " " + time;
   const dateend = year + " " + month + " " + end + " " + time;
   console.log(dateObj, "db");
@@ -67,6 +67,8 @@ function Dh() {
       });
     toast.success("Image Downloaded");
   };
+
+  console.log(getDaysArray(new Date(dateObj), new Date(dateend)), "gis");
 
   const chartData = historyData?.map((item) => {
     console.log(item);

@@ -83,7 +83,23 @@ function MainTrend({ data, width, height, title }) {
       display: true,
     },
     scaleID: "y",
-    value: data.mean + data.variance * 3,
+    value: data?.ucl,
+  };
+
+  const target = {
+    type: "line",
+    borderColor: "green",
+    borderWidth: 2,
+    click: function ({ chart, element }) {
+      console.log("Line annotation clicked");
+    },
+    label: {
+      backgroundColor: "green",
+      content: `Target`,
+      display: true,
+    },
+    scaleID: "y",
+    value: data?.target,
   };
 
   const downloadImage = () => {
@@ -106,7 +122,7 @@ function MainTrend({ data, width, height, title }) {
       display: true,
     },
     scaleID: "y",
-    value: data.mean,
+    value: data?.mean,
   };
 
   const min = {
@@ -122,7 +138,7 @@ function MainTrend({ data, width, height, title }) {
       display: true,
     },
     scaleID: "y",
-    value: data.mean - data.variance * 3,
+    value: data?.lcl,
   };
 
   let arr1 = [];
@@ -254,6 +270,7 @@ function MainTrend({ data, width, height, title }) {
             annotations: {
               max,
               mean,
+              target,
               min,
               ...arr1,
               ...arr,

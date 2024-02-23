@@ -118,7 +118,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 activecondition={
                   pathname === "/" ||
                   pathname === "/history" ||
-                  pathname.includes("dashboard")
+                  pathname.includes("dashboard") ||
+                  pathname.includes("dataSelect")
                 }
               >
                 {(handleClick, open) => {
@@ -127,7 +128,9 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                       <a
                         href="#0"
                         className={`block text-slate-200 truncate transition duration-150 ${
-                          pathname === "/" || pathname.includes("dashboard")
+                          pathname === "/" ||
+                          pathname.includes("dashboard") ||
+                          pathname.includes("dataSelect")
                             ? "hover:text-slate-200"
                             : "hover:text-white"
                         }`}
@@ -147,7 +150,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                               <path
                                 className={`fill-current ${
                                   pathname === "/" ||
-                                  pathname.includes("dashboard")
+                                  pathname.includes("dashboard") ||
+                                  pathname.includes("dataSelect")
                                     ? "text-indigo-500"
                                     : "text-slate-400"
                                 }`}
@@ -156,7 +160,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                               <path
                                 className={`fill-current ${
                                   pathname === "/" ||
-                                  pathname.includes("dashboard")
+                                  pathname.includes("dashboard") ||
+                                  pathname.includes("dataSelect")
                                     ? "text-indigo-600"
                                     : "text-slate-600"
                                 }`}
@@ -165,7 +170,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                               <path
                                 className={`fill-current ${
                                   pathname === "/" ||
-                                  pathname.includes("dashboard")
+                                  pathname.includes("dashboard") ||
+                                  pathname.includes("dataSelect")
                                     ? "text-indigo-200"
                                     : "text-slate-400"
                                 }`}
@@ -194,6 +200,22 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
+                              to="/dataSelect"
+                              className={({ isActive }) =>
+                                "block transition duration-150 truncate " +
+                                (isActive
+                                  ? "text-indigo-500"
+                                  : "text-slate-400 hover:text-slate-200")
+                              }
+                            >
+                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                Select MKPI/CKPI
+                              </span>
+                            </NavLink>
+                          </li>
+                          <li className="mb-1 last:mb-0">
+                            <NavLink
+                              end
                               to="/"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
@@ -208,7 +230,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                             </NavLink>
                           </li>
 
-                          <li className="mb-1 last:mb-0">
+                          {/* <li className="mb-1 last:mb-0">
                             <NavLink
                               end
                               to="/history"
@@ -223,7 +245,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                 History Data Charts
                               </span>
                             </NavLink>
-                          </li>
+                          </li> */}
                         </ul>
                       </div>
                     </React.Fragment>

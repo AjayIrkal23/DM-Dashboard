@@ -1,7 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
-import { Op } from 'sequelize';
 import fs from 'fs';
-import axios from 'axios';
 import xlsx from 'xlsx';
 import mongoose, { Schema } from 'mongoose';
 // @ts-ignore
@@ -64,7 +62,9 @@ const SendData = async (req: Request, res: Response, next: NextFunction) => {
 					Heading == 'F2 (Furnace Permeability)' ||
 					Heading == 'Sp. Total Fines Input' ||
 					Heading == 'COKE MOISTURE' ||
-					Heading == 'Total Oxygen'
+					Heading == 'Total Oxygen' ||
+					Heading == 'Al2O3 Input' ||
+					Heading == 'Coke CSR'
 				) {
 					let unit;
 					let arr: any = [];
@@ -81,16 +81,14 @@ const SendData = async (req: Request, res: Response, next: NextFunction) => {
 						let obj = {
 							values: arr,
 							unit: unit,
-							name: Heading,
-							type: 'MKPI'
+							name: Heading
 						};
 						finalArr.push(obj);
 					} else {
 						let obj = {
 							values: arr,
 							unit: unit,
-							name: Heading,
-							type: 'CKPI'
+							name: Heading
 						};
 						finalArr.push(obj);
 					}
@@ -100,6 +98,8 @@ const SendData = async (req: Request, res: Response, next: NextFunction) => {
 		let dateObj = new Date();
 		let month = dateObj.getUTCMonth() + 1; //months from 1-12
 		let year = dateObj.getUTCFullYear();
+
+		console.log(month);
 
 		const newdate = year + '-' + month;
 
@@ -134,6 +134,117 @@ const SendData2 = async (req: Request, res: Response, next: NextFunction) => {
 		} else {
 			return res.status(500).json({ message: 'Data Not Found' });
 		}
+	} catch (error) {
+		return res.status(500).json({ message: error });
+	}
+};
+
+const getVar = (values: any, mean: any) => {
+	let sumOfSquaredDifferences = 0;
+
+	for (let index = 0; index < values.length; index++) {
+		let num = Number(values[index]);
+		let squaredDifference = Math.pow(num - mean, 2);
+		sumOfSquaredDifferences += squaredDifference;
+	}
+
+	const averageOfSquaredDifferences = sumOfSquaredDifferences / values.length;
+	const standardDeviation = Math.sqrt(averageOfSquaredDifferences);
+
+	console.log(values.length);
+
+	return standardDeviation;
+};
+
+const SendUcl = async (req: Request, res: Response, next: NextFunction) => {
+	console.log(req.body);
+	try {
+		let dateObj = new Date();
+		let month = dateObj.getUTCMonth() + 1; // months from 1-12
+		let year = dateObj.getUTCFullYear();
+		let oneMean: any, oneUcl: any, oneLcl: any, oneVar: any;
+		let twoMean: any, twoUcl: any, twoLcl: any, twoVar: any;
+
+		if (month === 1) {
+			// If the current month is January, go back to December of the previous year
+			year -= 1;
+			month = 12;
+		} else if (month === 2) {
+			// If the current month is February, go back to January of the current year
+			month = 1;
+		} else {
+			// Otherwise, go back two months
+			month -= 1;
+		}
+
+		let dateObj1 = new Date();
+		let month1 = dateObj1.getUTCMonth() + 1; // months from 1-12
+		let year1 = dateObj1.getUTCFullYear();
+
+		if (month1 === 1) {
+			// If the current month is January, go back to December of the previous year
+			year1 -= 1;
+			month1 = 11;
+		} else if (month1 == 2) {
+			// If the current month is February, go back to January of the current year
+			year1 -= 1;
+			month1 = 12;
+		} else {
+			// Otherwise, go back two months
+			month1 -= 2;
+		}
+
+		const oneMonth = year + '-' + month;
+		const twoMonth = year1 + '-' + month1;
+
+		const oneData = await Data.findOne({ month: oneMonth });
+		const twoData = await Data.findOne({ month: twoMonth });
+
+		if (oneData) {
+			oneData?.data?.map((item: any, i) => {
+				if (item.name == req.body.name) {
+					console.log(item.values);
+					oneMean = item.values.filter((item: any, i: any) => i < 14 && item).reduce((partialSum: any, a: any) => partialSum + Number(a), 0) / (item.values.length / 2);
+					oneVar = getVar(
+						item.values.filter((item: any, i: any) => {
+							if (i < 14 && item > oneMean) {
+								return item;
+							}
+						}),
+						oneMean
+					);
+					oneUcl = oneMean + oneVar * 3;
+					oneLcl = oneMean - oneVar * 3;
+				}
+			});
+		}
+
+		if (twoData) {
+			twoData?.data?.map((item: any, i) => {
+				if (item.name == req.body.name) {
+					twoMean =
+						item.values
+							.filter((item: any, i: any) => {
+								if (i <= 14 && item > 0) {
+									return item;
+								}
+							})
+							.reduce((partialSum: any, a: any) => partialSum + Number(a), 0) /
+						(item.values.length / 2);
+					twoVar = getVar(
+						item.values.filter((item: any, i: any) => {
+							if (i <= 14 && item > oneMean) {
+								return item;
+							}
+						}),
+						oneMean
+					);
+					twoUcl = twoMean + twoVar * 3;
+					twoLcl = twoMean - twoVar * 3;
+				}
+			});
+		}
+		return res.status(200).json({ mean: twoMean, ucl: twoUcl, lcl: twoLcl });
 	} catch (error) {
 		return res.status(500).json({ message: error });
 	}
@@ -191,5 +302,6 @@ const getData = async (req: Request, res: Response, next: NextFunction) => {
 export default {
 	SendData,
 	SendData2,
-	getData
+	getData,
+	SendUcl
 };

@@ -8,6 +8,7 @@ const router = express.Router();
 router.get('/hello', (req, res, next) => res.status(200).json({ message: 'hello vaiii' }));
 
 router.get('/app', Data.SendData);
+router.post('/Ucl', Data.SendUcl);
 router.post('/app2', Data.SendData2);
 router.post('/app3', Data.getData);
 
